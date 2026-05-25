@@ -48,6 +48,8 @@ export const createApp = ({ redisClient = shouldUseRedis ? createRedisClient() :
     app.set("view engine", "ejs");
     app.set("views", "./views");
 
+    app.use(express.static("public"));
+
     const globalRateLimiter = rateLimit({
         windowMs: 1 * 60 * 1000,
         max: 100,
