@@ -130,7 +130,11 @@ export const createApp = ({ redisClient = shouldUseRedis ? createRedisClient() :
     });
 
     app.get("/", async (req, res) => {
-        res.render("index");
+        res.render("index", {
+            username: "John Doe",
+            bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            profilePicture: "https://plus.unsplash.com/premium_photo-1772526927285-1aec8e91efba?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        });
     });
 
     return app;

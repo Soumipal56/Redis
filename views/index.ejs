@@ -7,7 +7,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    <h1 class="text-3xl underline">Welcome to the Index Page</h1>
-    <script src="/script.js"></script>
+    <section class="p-4">
+        <img src="<%= profilePicture %>" alt="Description of the image"
+         class="w-[7rem] h-[7rem] rounded-full object-cover shadow-md">
+        <h2 class="text-2xl font-bold mt-4"><%= username %></h2>
+        <p class="text-gray-600"><%= bio %></p>
+    </section>
 </body>
 </html>
