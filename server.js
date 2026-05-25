@@ -40,7 +40,6 @@ const globalRateLimiter = rateLimit({
     },
     statusCode: 429, // Set status code to 429
     smartHeaders: true,
-    legacyHeaders: false,
 });
 
 app.use(globalRateLimiter);
