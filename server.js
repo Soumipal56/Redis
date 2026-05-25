@@ -32,6 +32,10 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 
+// Configure EJS
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
 const globalRateLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minutes
     max: 100, // Limit each IP to 100 requests per windowMs
@@ -82,11 +86,7 @@ app.post("/user", async (req, res) => {
 })
 
 app.get("/", async (req, res) => {
-    let sum = 0;
-    for (let i = 0; i < 10000000000; i++) {
-        sum += i;
-    }
-    res.json({ message: "Sum calculated", data: sum });
+   res.render("index");
 })
 
 
