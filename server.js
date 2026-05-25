@@ -4,6 +4,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import Redis from "ioredis";
 import { User } from "./models/user.model.js";
+import rateLimit from "express-rate-limit";
 
 // Connect to MongoDB
 const connectToMongoDB = async () => {
@@ -30,6 +31,19 @@ redis.once("ready", () => {
 const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
+
+const globalRateLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: {
+        error: "Too many requests, please try again later.",
+    },
+    statusCode: 429, // Set status code to 429
+    smartHeaders: true,
+    legacyHeaders: false,
+});
+
+app.use(globalRateLimiter);
 
 // Routes
 app.get("/user/:id", async (req, res) => {
@@ -66,6 +80,14 @@ app.post("/user", async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+})
+
+app.get("/", async (req, res) => {
+    let sum = 0;
+    for (let i = 0; i < 10000000000; i++) {
+        sum += i;
+    }
+    res.json({ message: "Sum calculated", data: sum });
 })
 
 
