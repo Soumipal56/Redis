@@ -1,0 +1,160 @@
+
+> redis@1.0.0 test
+> node --experimental-vm-modules ./node_modules/jest/bin/jest.js
+
+(node:32400) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS __tests__/dummy.test.js
+(node:8232) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[0mGET /user/6a1413829e4400b475f7c54f [33m404[0m 18.441 ms - 40[0m
+FAIL __tests__/user.test.js
+  ΓùÅ Console
+
+    console.error
+      ValidationError: Unexpected configuration option: smartHeaders See https://express-rate-limit.github.io/ERR_ERL_UNKNOWN_OPTION/ for more information.
+          at Object.knownOptions (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:545:15)
+          at Object.wrappedValidations.<computed> [as knownOptions] (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:675:22)
+          at parseOptions (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:740:16)
+          at rateLimit (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:831:18)
+          at rateLimit (C:\chr\redis\server.js:49:31)
+          at createApp (C:\chr\redis\server.js:135:20)
+          at SourceTextModule.evaluate (node:internal/vm/module:227:23)
+          at EsmLoader.linkAndEvaluateModule (C:\chr\redis\node_modules\jest-runtime\build\index.js:1201:47)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at jestAdapter (C:\chr\redis\node_modules\jest-circus\build\runner.js:94:5)
+          at runTestInternal (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:276:16)
+          at runTest (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:344:7)
+          at Object.worker (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:498:12) {
+        code: 'ERR_ERL_UNKNOWN_OPTION',
+        help: 'https://express-rate-limit.github.io/ERR_ERL_UNKNOWN_OPTION/'
+      }
+
+      47 |     app.set("views", "./views");
+      48 |
+    > 49 |     const globalRateLimiter = rateLimit({
+         |                               ^
+      50 |         windowMs: 1 * 60 * 1000,
+      51 |         max: 100,
+      52 |         message: {
+
+      at Object.error (node_modules/express-rate-limit/dist/index.mjs:181:13)
+      at Object.wrappedValidations.<computed> [as knownOptions] (node_modules/express-rate-limit/dist/index.mjs:681:23)
+      at parseOptions (node_modules/express-rate-limit/dist/index.mjs:740:16)
+      at rateLimit (node_modules/express-rate-limit/dist/index.mjs:831:18)
+      at rateLimit (server.js:49:31)
+      at createApp (server.js:135:20)
+
+    console.log
+      Connected to Redis
+
+      at EventEmitter.log (server.js:18:17)
+
+    console.error
+      ValidationError: Unexpected configuration option: smartHeaders See https://express-rate-limit.github.io/ERR_ERL_UNKNOWN_OPTION/ for more information.
+          at Object.knownOptions (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:545:15)
+          at Object.wrappedValidations.<computed> [as knownOptions] (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:675:22)
+          at parseOptions (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:740:16)
+          at rateLimit (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:831:18)
+          at rateLimit (C:\chr\redis\server.js:49:31)
+          at Object.createApp (C:\chr\redis\__tests__\user.test.js:39:21)
+          at Promise.finally.completed (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1561:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1501:10)
+          at _callCircusTest (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1011:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:951:3)
+          at C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:853:7
+          at _runTestsForDescribeBlock (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:866:11)
+          at _runTestsForDescribeBlock (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:861:11)
+          at run (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:765:3)
+          at runAndTransformResultsToJestFormat (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1993:21)
+          at jestAdapter (C:\chr\redis\node_modules\jest-circus\build\runner.js:111:19)
+          at runTestInternal (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:276:16)
+          at runTest (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:344:7)
+          at Object.worker (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:498:12) {
+        code: 'ERR_ERL_UNKNOWN_OPTION',
+        help: 'https://express-rate-limit.github.io/ERR_ERL_UNKNOWN_OPTION/'
+      }
+
+      47 |     app.set("views", "./views");
+      48 |
+    > 49 |     const globalRateLimiter = rateLimit({
+         |                               ^
+      50 |         windowMs: 1 * 60 * 1000,
+      51 |         max: 100,
+      52 |         message: {
+
+      at Object.error (node_modules/express-rate-limit/dist/index.mjs:181:13)
+      at Object.wrappedValidations.<computed> [as knownOptions] (node_modules/express-rate-limit/dist/index.mjs:681:23)
+      at parseOptions (node_modules/express-rate-limit/dist/index.mjs:740:16)
+      at rateLimit (node_modules/express-rate-limit/dist/index.mjs:831:18)
+      at rateLimit (server.js:49:31)
+      at Object.createApp (__tests__/user.test.js:39:21)
+
+    console.error
+      ValidationError: Unexpected configuration option: smartHeaders See https://express-rate-limit.github.io/ERR_ERL_UNKNOWN_OPTION/ for more information.
+          at Object.knownOptions (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:545:15)
+          at Object.wrappedValidations.<computed> [as knownOptions] (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:675:22)
+          at parseOptions (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:740:16)
+          at rateLimit (C:\chr\redis\node_modules\express-rate-limit\dist\index.mjs:831:18)
+          at rateLimit (C:\chr\redis\server.js:49:31)
+          at Object.createApp (C:\chr\redis\__tests__\user.test.js:52:21)
+          at Promise.finally.completed (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1561:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1501:10)
+          at _callCircusTest (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1011:40)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at _runTest (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:951:3)
+          at C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:853:7
+          at _runTestsForDescribeBlock (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:866:11)
+          at _runTestsForDescribeBlock (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:861:11)
+          at run (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:765:3)
+          at runAndTransformResultsToJestFormat (C:\chr\redis\node_modules\jest-circus\build\jestAdapterInit.js:1993:21)
+          at jestAdapter (C:\chr\redis\node_modules\jest-circus\build\runner.js:111:19)
+          at runTestInternal (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:276:16)
+          at runTest (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:344:7)
+          at Object.worker (C:\chr\redis\node_modules\jest-runner\build\testWorker.js:498:12) {
+        code: 'ERR_ERL_UNKNOWN_OPTION',
+        help: 'https://express-rate-limit.github.io/ERR_ERL_UNKNOWN_OPTION/'
+      }
+
+      47 |     app.set("views", "./views");
+      48 |
+    > 49 |     const globalRateLimiter = rateLimit({
+         |                               ^
+      50 |         windowMs: 1 * 60 * 1000,
+      51 |         max: 100,
+      52 |         message: {
+
+      at Object.error (node_modules/express-rate-limit/dist/index.mjs:181:13)
+      at Object.wrappedValidations.<computed> [as knownOptions] (node_modules/express-rate-limit/dist/index.mjs:681:23)
+      at parseOptions (node_modules/express-rate-limit/dist/index.mjs:740:16)
+      at rateLimit (node_modules/express-rate-limit/dist/index.mjs:831:18)
+      at rateLimit (server.js:49:31)
+      at Object.createApp (__tests__/user.test.js:52:21)
+
+  ΓùÅ User routes ΓÇ║ returns 400 when the user id is invalid
+
+    TypeError: Failed to parse URL from http://127.0.0.1:${port}/user/not-a-valid-id
+
+
+    Cause:
+    TypeError: Invalid URL
+
+      54 |
+      55 |         const { port } = server.address();
+    > 56 |         const response = await fetch("http://127.0.0.1:${port}/user/not-a-valid-id");
+         |                                ^
+      57 |
+      58 |         expect(response.status).toBe(400);
+      59 |
+
+      at Object.fetch (__tests__/user.test.js:56:32)
+
+A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure that .unref() was called on them.
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 5 passed, 6 total
+Snapshots:   0 total
+Time:        3.695 s
+Ran all test suites.

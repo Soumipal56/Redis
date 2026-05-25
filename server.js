@@ -6,92 +6,148 @@ import Redis from "ioredis";
 import { User } from "./models/user.model.js";
 import rateLimit from "express-rate-limit";
 
-// Connect to MongoDB
-const connectToMongoDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI)
-        console.log("Connected to MongoDB");
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
+export const connectToMongoDB = async () => {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Connected to MongoDB");
+};
+
+const createRedisClient = () => {
+    const redis = new Redis(process.env.REDIS_URI);
+
+    redis.once("ready", () => {
+        console.log("Connected to Redis");
+    });
+
+    redis.once("error", (error) => {
+        console.error("Redis connection error:", error.message);
+    });
+
+    return redis;
+};
+
+const safeParseCachedUser = (value) => {
+    if (!value) {
+        return null;
     }
-}
 
-connectToMongoDB();
-
-// Connect to Redis
-const redis = new Redis(process.env.REDIS_URI)
-
-console.log("REDIS_URI:", process.env.REDIS_URI); // Add this line
-
-redis.once("ready", () => {
-    console.log("Connected to Redis");
-})
-
-// Create Express app
-const app = express();
-app.use(morgan("dev"));
-app.use(express.json());
-
-// Configure EJS
-app.set("view engine", "ejs");
-app.set("views", "./views");
-
-const globalRateLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
-    message: {
-        error: "Too many requests, please try again later.",
-    },
-    statusCode: 429, // Set status code to 429
-    smartHeaders: true,
-});
-
-app.use(globalRateLimiter);
-
-// Routes
-app.get("/user/:id", async (req, res) => {
     try {
+        return JSON.parse(value);
+    } catch {
+        return null;
+    }
+};
 
-        const userFromCache = await redis.get(`user:${req.params.id}`);
-        if (userFromCache) {
-            return res.json({
-                message: "User fetched from cache",
-                data: JSON.parse(userFromCache),
-            })
+const shouldUseRedis = process.env.NODE_ENV !== "test" && Boolean(process.env.REDIS_URI);
+
+export const createApp = ({ redisClient = shouldUseRedis ? createRedisClient() : null, userModel = User } = {}) => {
+    const app = express();
+
+    app.use(morgan("dev"));
+    app.use(express.json());
+
+    app.set("view engine", "ejs");
+    app.set("views", "./views");
+
+    const globalRateLimiter = rateLimit({
+        windowMs: 1 * 60 * 1000,
+        max: 100,
+        message: {
+            error: "Too many requests, please try again later.",
+        },
+        statusCode: 429,
+        standardHeaders: true,
+    });
+
+    app.use(globalRateLimiter);
+
+    app.get("/user/:id", async (req, res) => {
+        const { id } = req.params;
+
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(400).json({
+                message: "Invalid user id",
+                data: null,
+            });
         }
 
-        const user = await User.findOne({ _id: req.params.id });
+        try {
+            let cachedUser = null;
 
-        await redis.set(`user:${req.params.id}`, JSON.stringify(user), "EX", 3600); // Cache for 1 hour
-        res.json({
-            message: "User fetched successfully",
-            data: user,
-        })
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-})
+            if (redisClient?.get) {
+                try {
+                    cachedUser = safeParseCachedUser(await redisClient.get(`user:${id}`));
+                } catch {
+                    cachedUser = null;
+                }
+            }
 
-app.post("/user", async (req, res) => {
-    try {
-        const newUser = new User(req.body);
-        await newUser.save();
-        res.json({
-            message: "User created successfully",
-            data: newUser,
-        })
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-})
+            if (cachedUser) {
+                return res.json({
+                    message: "User fetched from cache",
+                    data: cachedUser,
+                });
+            }
 
-app.get("/", async (req, res) => {
-   res.render("index");
-})
+            const user = await userModel.findById(id);
 
+            if (!user) {
+                return res.status(404).json({
+                    message: "User not found",
+                    data: null,
+                });
+            }
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+            if (redisClient?.set) {
+                try {
+                    await redisClient.set(`user:${id}`, JSON.stringify(user), "EX", 3600);
+                } catch {
+                    // Ignore Redis write failures so the request can still succeed.
+                }
+            }
+
+            return res.json({
+                message: "User fetched successfully",
+                data: user,
+            });
+        } catch (error) {
+            return res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.post("/user", async (req, res) => {
+        try {
+            const newUser = new userModel(req.body);
+            await newUser.save();
+            res.json({
+                message: "User created successfully",
+                data: newUser,
+            });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    app.get("/", async (req, res) => {
+        res.render("index");
+    });
+
+    return app;
+};
+
+export const app = createApp();
+
+export const startServer = async () => {
+    await connectToMongoDB();
+
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+};
+
+if (process.env.NODE_ENV !== "test") {
+    startServer().catch((error) => {
+        console.error("Error starting server:", error);
+        process.exit(1);
+    });
+}
