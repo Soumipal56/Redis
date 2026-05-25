@@ -20,6 +20,8 @@ connectToMongoDB();
 // Connect to Redis
 const redis = new Redis(process.env.REDIS_URI)
 
+console.log("REDIS_URI:", process.env.REDIS_URI); // Add this line
+
 redis.once("ready", () => {
     console.log("Connected to Redis");
 })
@@ -32,7 +34,18 @@ app.use(express.json());
 // Routes
 app.get("/user/:id", async (req, res) => {
     try {
+
+        const userFromCache = await redis.get(`user:${req.params.id}`);
+        if (userFromCache) {
+            return res.json({
+                message: "User fetched from cache",
+                data: JSON.parse(userFromCache),
+            })
+        }
+
         const user = await User.findOne({ _id: req.params.id });
+
+        await redis.set(`user:${req.params.id}`, JSON.stringify(user), "EX", 3600); // Cache for 1 hour
         res.json({
             message: "User fetched successfully",
             data: user,
